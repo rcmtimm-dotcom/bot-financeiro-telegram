@@ -1,3 +1,5 @@
+import os
+import json
 from telegram import Update
 from telegram.ext import (
     ApplicationBuilder,
@@ -25,7 +27,11 @@ LIMITE_MENSAL = 3000  # ajuste como quiser
 # GOOGLE SHEETS
 # =========================
 
-gc = gspread.service_account(filename=CAMINHO_CREDENCIAIS)
+if "GOOGLE_CREDENTIALS" in os.environ:
+    creds_dict = json.loads(os.environ["GOOGLE_CREDENTIALS"])
+    gc = gspread.service_account_from_dict(creds_dict)
+else:
+    gc = gspread.service_account(filename=CAMINHO_CREDENCIAIS)
 sheet = gc.open(PLANILHA_NOME).sheet1
 
 # =========================
@@ -133,3 +139,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
